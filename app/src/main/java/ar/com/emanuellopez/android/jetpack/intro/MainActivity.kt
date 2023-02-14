@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -28,26 +33,68 @@ import androidx.compose.ui.unit.dp
 import ar.com.emanuellopez.android.jetpack.intro.ui.theme.JetpackComposeIntroductionTheme
 
 private val messages: List<MyMessage> = listOf(
-    MyMessage("Message Title #01", "Message Body #01"),
-    MyMessage("Message Title #02", "Message Body #02"),
-    MyMessage("Message Title #03", "Message Body #03"),
-    MyMessage("Message Title #04", "Message Body #04"),
-    MyMessage("Message Title #05", "Message Body #05"),
-    MyMessage("Message Title #06", "Message Body #06"),
-    MyMessage("Message Title #07", "Message Body #07"),
-    MyMessage("Message Title #08", "Message Body #08"),
-    MyMessage("Message Title #09", "Message Body #09"),
-    MyMessage("Message Title #10", "Message Body #10"),
-    MyMessage("Message Title #11", "Message Body #11"),
-    MyMessage("Message Title #12", "Message Body #12"),
-    MyMessage("Message Title #13", "Message Body #13"),
-    MyMessage("Message Title #14", "Message Body #14"),
-    MyMessage("Message Title #15", "Message Body #15"),
-    MyMessage("Message Title #16", "Message Body #16"),
-    MyMessage("Message Title #17", "Message Body #17"),
-    MyMessage("Message Title #18", "Message Body #18"),
-    MyMessage("Message Title #19", "Message Body #19"),
-    MyMessage("Message Title #20", "Message Body #20"),
+    MyMessage(
+        "Message Title #01",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis,"
+    ),
+    MyMessage("Message Title #02", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
+    MyMessage(
+        "Message Title #03",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna. Sed malesuada mattis velit vel aliquet. Suspendisse potenti."
+    ),
+    MyMessage(
+        "Message Title #04",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna."
+    ),
+    MyMessage(
+        "Message Title #05",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna. Sed malesuada mattis velit vel aliquet. Suspendisse potenti. Proin commodo consequat massa, sit amet porttitor leo volutpat ut. Phasellus tincidunt, velit quis aliquet tincidunt, sapien sem condimentum elit, ut dictum erat velit consequat felis."
+    ),
+    MyMessage(
+        "Message Title #06",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna. Sed malesuada mattis velit vel aliquet. Suspendisse potenti."
+    ),
+    MyMessage(
+        "Message Title #07",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna."
+    ),
+    MyMessage("Message Title #08", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
+    MyMessage(
+        "Message Title #09",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna. Sed malesuada mattis velit vel aliquet. Suspendisse potenti."
+    ),
+    MyMessage(
+        "Message Title #10",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna. Sed malesuada mattis velit vel aliquet. Suspendisse potenti. Proin commodo consequat massa, sit amet porttitor leo volutpat ut. Phasellus tincidunt, velit quis aliquet tincidunt, sapien sem condimentum elit, ut dictum erat velit consequat felis."
+    ),
+    MyMessage("Message Title #11", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
+    MyMessage(
+        "Message Title #12",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna. Sed malesuada mattis velit vel aliquet. Suspendisse potenti."
+    ),
+    MyMessage(
+        "Message Title #13",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna."
+    ),
+    MyMessage("Message Title #14", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
+    MyMessage(
+        "Message Title #15",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna. Sed malesuada mattis velit vel aliquet. Suspendisse potenti."
+    ),
+    MyMessage(
+        "Message Title #16",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna."
+    ),
+    MyMessage("Message Title #17", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
+    MyMessage(
+        "Message Title #18",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna. Sed malesuada mattis velit vel aliquet. Suspendisse potenti."
+    ),
+    MyMessage(
+        "Message Title #19",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eleifend mi placerat, volutpat urna quis, semper urna."
+    ),
+    MyMessage("Message Title #20", "Lorem ipsum dolor sit amet, consectetur adipiscing elit."),
 )
 
 
@@ -99,7 +146,12 @@ fun MyImage() {
 
 @Composable
 fun MyTexts(message: MyMessage) {
-    Column(modifier = Modifier.padding(start = 8.dp)) {
+    var expanded by remember { mutableStateOf(false) }
+    Column(modifier = Modifier
+        .padding(start = 8.dp)
+        .clickable {
+            expanded = !expanded
+        }) {
         MyText(
             message.title,
             color = MaterialTheme.colors.primary,
@@ -109,14 +161,15 @@ fun MyTexts(message: MyMessage) {
         MyText(
             message.body,
             color = MaterialTheme.colors.onBackground,
-            style = MaterialTheme.typography.subtitle2
+            style = MaterialTheme.typography.subtitle2,
+            lines = if (expanded) Int.MAX_VALUE else 1,
         )
     }
 }
 
 @Composable
-fun MyText(text: String, color: Color, style: TextStyle) {
-    Text(text, color = color, style = style)
+fun MyText(text: String, color: Color, style: TextStyle, lines: Int = Int.MAX_VALUE) {
+    Text(text, color = color, style = style, maxLines = lines)
 }
 
 @Preview(showSystemUi = true)
