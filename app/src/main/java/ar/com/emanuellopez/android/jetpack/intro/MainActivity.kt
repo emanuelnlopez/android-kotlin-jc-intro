@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -25,26 +27,61 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ar.com.emanuellopez.android.jetpack.intro.ui.theme.JetpackComposeIntroductionTheme
 
+private val messages: List<MyMessage> = listOf(
+    MyMessage("Message Title #01", "Message Body #01"),
+    MyMessage("Message Title #02", "Message Body #02"),
+    MyMessage("Message Title #03", "Message Body #03"),
+    MyMessage("Message Title #04", "Message Body #04"),
+    MyMessage("Message Title #05", "Message Body #05"),
+    MyMessage("Message Title #06", "Message Body #06"),
+    MyMessage("Message Title #07", "Message Body #07"),
+    MyMessage("Message Title #08", "Message Body #08"),
+    MyMessage("Message Title #09", "Message Body #09"),
+    MyMessage("Message Title #10", "Message Body #10"),
+    MyMessage("Message Title #11", "Message Body #11"),
+    MyMessage("Message Title #12", "Message Body #12"),
+    MyMessage("Message Title #13", "Message Body #13"),
+    MyMessage("Message Title #14", "Message Body #14"),
+    MyMessage("Message Title #15", "Message Body #15"),
+    MyMessage("Message Title #16", "Message Body #16"),
+    MyMessage("Message Title #17", "Message Body #17"),
+    MyMessage("Message Title #18", "Message Body #18"),
+    MyMessage("Message Title #19", "Message Body #19"),
+    MyMessage("Message Title #20", "Message Body #20"),
+)
+
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             JetpackComposeIntroductionTheme() {
-                MyComponents()
+                MyMessages(messages)
             }
         }
     }
 }
 
+data class MyMessage(val title: String, val body: String)
+
 @Composable
-fun MyComponents() {
+fun MyMessages(messages: List<MyMessage>) {
+    LazyColumn {
+        items(messages) { message ->
+            MyComponents(message)
+        }
+    }
+}
+
+@Composable
+fun MyComponents(message: MyMessage) {
     Row(
         modifier = Modifier
             .background(MaterialTheme.colors.background)
             .padding(8.dp)
     ) {
         MyImage()
-        MyTexts()
+        MyTexts(message)
     }
 }
 
@@ -61,16 +98,16 @@ fun MyImage() {
 }
 
 @Composable
-fun MyTexts() {
+fun MyTexts(message: MyMessage) {
     Column(modifier = Modifier.padding(start = 8.dp)) {
         MyText(
-            "Hello Jetpack Compose!",
+            message.title,
             color = MaterialTheme.colors.primary,
             style = MaterialTheme.typography.subtitle1
         )
         Spacer(modifier = Modifier.height(16.dp))
         MyText(
-            "This is another text",
+            message.body,
             color = MaterialTheme.colors.onBackground,
             style = MaterialTheme.typography.subtitle2
         )
@@ -82,11 +119,11 @@ fun MyText(text: String, color: Color, style: TextStyle) {
     Text(text, color = color, style = style)
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewComponents() {
-    JetpackComposeIntroductionTheme() {
-        MyComponents()
+    JetpackComposeIntroductionTheme {
+        MyMessages(messages)
     }
 }
